@@ -150,10 +150,86 @@ public class WritingExpressions{
         return infix.toString();
     }
 
+    // Currently limited to working with only Integers
+    public static int evaluatePostfix(String postfix){
+        Stack<Integer> operands = new Stack<>();
+
+        postfix = postfix.replaceAll("\\s", "");
+
+        for(int i = 0; i<postfix.length();i++){
+            if(Character.isDigit(postfix.charAt(i))){
+                operands.push(postfix.charAt(i) - '0');
+            } else {
+                char operator = postfix.charAt(i);
+                int second = operands.pop();
+                int first = operands.pop();
+
+                switch(operator){
+                    case '+':
+                        operands.push(first + second);
+                        break;
+                    case '-':
+                        operands.push(first-second);
+                        break;
+                    case '*':
+                        operands.push(first*second);
+                        break;
+                    case '/':
+                        operands.push(first / second);
+                        break;
+                    case '^':
+                        operands.push((int) Math.pow(first, second));
+                        break;
+                }
+            }
+            System.out.println(operands.peek());
+        }
+        return operands.pop();
+    }
+
+    // Currently limited to working with only Integers
+    public static int evaluatePrefix(String prefix){
+        Stack<Integer> operands = new Stack<>();
+
+        prefix = prefix.replaceAll("\\s", "");
+
+        for(int i=prefix.length()-1;i>=0;i--){
+            if(Character.isDigit(prefix.charAt(i))){
+                operands.push(prefix.charAt(i) - '0');
+            } else {
+                char operator = prefix.charAt(i);
+                int first = operands.pop();
+                int second = operands.pop();
+
+                switch(operator){
+                    case '+':
+                        operands.push(first + second);
+                        break;
+                    case '-':
+                        operands.push(first-second);
+                        break;
+                    case '*':
+                        operands.push(first*second);
+                        break;
+                    case '/':
+                        operands.push(first / second);
+                        break;
+                    case '^':
+                        operands.push((int) Math.pow(first, second));
+                        break;
+                }
+            }
+            System.out.println(operands.peek());
+        }
+        return operands.pop();
+    }
+
     public static void main(String[]args){
         //System.out.println(infixToPostfix("(2-3+4)*(5+6*7)"));
         //System.out.println(infixToPrefix("(A + B) * (C + D)"));
-        // System.out.println(prefixToInfix("+ * A B * C D"));
-        System.out.println(postfixToInfix("A B + C + D +"));
+         //System.out.println(prefixToInfix("* - 9 1 + 2 3"));
+        //System.out.println(postfixToInfix("2 3 ^ 4 ^"));
+        //System.out.print(evaluatePostfix("9 1 - 2 3 + *"));
+        System.out.println(evaluatePrefix("- + * 2 3 * 5 4 9"));
     }
 }
