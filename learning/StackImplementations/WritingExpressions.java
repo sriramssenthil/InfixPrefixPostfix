@@ -1,5 +1,22 @@
 import java.util.Stack;
 public class WritingExpressions{
+    
+    // Code to determine the priority of an operator
+    public static int operatorPriority(int operator){
+        switch(operator){
+            case '^':
+                return 1;
+            case '*':
+            case '/':
+                return 2;
+            case '+':
+            case '-':
+                return 3;
+        }
+        return 4;
+            
+    }
+
 
     public static String infixToPostfix(String sequence){
         Stack<Character> conv = new Stack<>();
@@ -36,21 +53,7 @@ public class WritingExpressions{
         return postfix;
     }
 
-    public static int operatorPriority(int operator){
-        switch(operator){
-            case '^':
-                return 1;
-            case '*':
-            case '/':
-                return 2;
-            case '+':
-            case '-':
-                return 3;
-        }
-        return 4;
-            
-    }
-
+    // Follows the algorithm of reversing the sequence and applying a slightly modified postfix function
     public static String infixToPrefix(String sequence){
         StringBuilder revSeq = new StringBuilder(sequence);
         revSeq.reverse();
@@ -78,6 +81,7 @@ public class WritingExpressions{
                     conv.push('(');
                 } else if (revSeq.charAt(i)=='+' || revSeq.charAt(i)=='*' || revSeq.charAt(i)=='-' || revSeq.charAt(i)=='/' || revSeq.charAt(i)=='^'){
                     int priority = operatorPriority(revSeq.charAt(i));
+                    // Modification from <= to <
                     while(!conv.empty() && operatorPriority(conv.peek()) < priority){
                         prefix.append(conv.pop());
                         
@@ -99,13 +103,57 @@ public class WritingExpressions{
         }
 
         return prefix.reverse().toString();
-        
+    }
 
+    public static String prefixToInfix(String infix){
+        Stack<String> conv = new Stack<>();
 
+        infix = infix.replaceAll("\\s", "");
+        StringBuilder revInf = new StringBuilder(infix);
+        revInf.reverse();
+
+        for (int i = 0; i<revInf.length();i++){
+            if (Character.isLetterOrDigit(revInf.charAt(i))){
+                conv.push(revInf.charAt(i)+"");
+            } else {
+                conv.push("("+conv.pop()+revInf.charAt(i)+conv.pop()+")");
+            }
+        }
+
+        return conv.pop();
+    }
+
+    public static String postfixToInfix(String postfix){
+        Stack<String> conv = new Stack<>();
+
+        postfix = postfix.replaceAll("\\s", "");
+       
+
+        for (int i = 0; i<postfix.length();i++){
+            if (Character.isLetterOrDigit(postfix.charAt(i))){
+                conv.push(postfix.charAt(i)+"");
+            } else {
+                conv.push("("+conv.pop()+postfix.charAt(i)+conv.pop()+")");
+            }
+        }
+
+        StringBuilder infix = new StringBuilder(conv.pop());
+        infix.reverse();
+        for(int i=0;i<infix.length();i++){
+            if(infix.charAt(i) == '('){
+                infix.setCharAt(i, ')');
+            } else if(infix.charAt(i) == ')'){
+                infix.setCharAt(i, '(');
+            }
+        }
+
+        return infix.toString();
     }
 
     public static void main(String[]args){
         //System.out.println(infixToPostfix("(2-3+4)*(5+6*7)"));
-        System.out.println(infixToPrefix("(A + B) * (C + D)"));
+        //System.out.println(infixToPrefix("(A + B) * (C + D)"));
+        // System.out.println(prefixToInfix("+ * A B * C D"));
+        System.out.println(postfixToInfix("A B + C + D +"));
     }
 }
